@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Test</title>
+</head>
+
+<body>
+    <div>
+        <label for="user">user</label>
+        <input type="text" id="user" name="user">
+    </div>
+    <div>
+        <input type="text" id="in">
+        <button id="notifyButton">Notify Clients</button>
+    </div>
+
+    <div id="messages">
+
+    </div>
+    <script>
+        const button = document.getElementById('notifyButton');
+        const messages = document.getElementById('messages');
+        const input = document.getElementById('in');
+        const user = document.getElementById('user');
+
+
+        var currentPageUrl = window.location.href.replace(/^https?:\/\//, '');
+        console.log(currentPageUrl); // This will print the URL of the current page to the console.
+
+        const ws = new WebSocket(`wss://${currentPageUrl}`);
+
+        ws.onopen = function () {
+            console.log('Connected to the server');
+        };
+
+        ws.onmessage = function (event) {
+            console.log(event.data);
+            let newMessage = document.createElement('div');
+            const reader = new FileReader();
+            reader.onload = function () {
+                newMessage.textContent = reader.result;
+                messages.appendChild(newMessage);
+            };
+            // Read the Blob as text
+            reader.readAsText(event.data);
+        };
+
+        button.addEventListener('click', function () {
+            console.log("pressed");
+            let message = user.value + ": " + input.value;
+            ws.send(message);
+            input.value = '';
+        });
+
+    </script>
+</body>
+
+</html>
