@@ -1,16 +1,18 @@
-const https = require('https');
+// const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const WebSocket = require('ws');
 const express = require('express');
 
 const app = express();
-
-const server = https.createServer({
-    cert: fs.readFileSync('./keys/cert.pem'),
-    key: fs.readFileSync('./keys/key.pem')
-}, app);
+const server = http.createServer(app);
+// const server = https.createServer({
+//     cert: fs.readFileSync('./keys/cert.pem'),
+//     key: fs.readFileSync('./keys/key.pem')
+// }, app);
 
 const wss = new WebSocket.Server({ server });
+
 app.use(express.static('public'));
 
 
